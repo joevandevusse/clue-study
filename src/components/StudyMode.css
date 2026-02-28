@@ -1,0 +1,89 @@
+.study-mode {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+.study-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.study-topic {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.study-score {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  min-width: 80px;
+  text-align: right;
+}
+
+.score-good { color: #7cff7c; font-weight: 700; }
+.score-mid  { color: #ffd700; font-weight: 700; }
+.score-bad  { color: #ff5c5c; font-weight: 700; }
+
+.study-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem 1rem;
+}
+
+.grade-buttons {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.btn-fail {
+  background: #7a1a1a;
+  border: 2px solid #ff5c5c;
+  color: #ff5c5c;
+  padding: 0.75rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.15s;
+}
+
+.btn-fail:hover { background: #a02020; }
+
+.btn-pass {
+  background: #1a4a1a;
+  border: 2px solid #7cff7c;
+  color: #7cff7c;
+  padding: 0.75rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.15s;
+}
+
+.btn-pass:hover { background: #206020; }
+
+.loading-msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100dvh;
+  color: var(--text-dim);
+  font-size: 1.1rem;
+}

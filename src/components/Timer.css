@@ -1,0 +1,19 @@
+.timer {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.timer-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.timer-green  { color: #7cff7c; }
+.timer-yellow { color: #ffd700; }
+.timer-red    { color: #ff5c5c; }
