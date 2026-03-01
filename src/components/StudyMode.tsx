@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchClues, recordStat } from '../api/client';
-import { ClueDto } from '../types';
+import type { ClueDto } from '../types';
 import FlashCard from './FlashCard';
 import Timer from './Timer';
 import './StudyMode.css';
@@ -20,6 +20,7 @@ export default function StudyMode({ topic, onExit }: Props) {
   const [seconds, setSeconds]   = useState(TIMER_SECONDS);
   const [streak, setStreak]     = useState({ pass: 0, fail: 0 });
   const [loading, setLoading]   = useState(true);
+  const [trackStats, setTrackStats] = useState(false);
 
   const timerRef  = useRef<ReturnType<typeof setInterval> | null>(null);
   const autoFired = useRef(false); // prevents double-recording on auto-fail
@@ -70,7 +71,7 @@ export default function StudyMode({ topic, onExit }: Props) {
           clearInterval(timerRef.current!);
           if (!autoFired.current) {
             autoFired.current = true;
-            recordStat(topic, false);
+            if (trackStats) recordStat(topic, false);
             setStreak((st) => ({ ...st, fail: st.fail + 1 }));
             setRevealed(true);
           }
@@ -81,7 +82,7 @@ export default function StudyMode({ topic, onExit }: Props) {
     }, 1000);
 
     return () => clearInterval(timerRef.current!);
-  }, [current, revealed, topic]);
+  }, [current, revealed, topic, trackStats]);
 
   // ── User interactions ─────────────────────────────────────────────────
 
@@ -91,7 +92,7 @@ export default function StudyMode({ topic, onExit }: Props) {
   }
 
   function handleGrade(passed: boolean) {
-    recordStat(topic, passed);
+    if (trackStats) recordStat(topic, passed);
     setStreak((st) => ({
       pass: passed ? st.pass + 1 : st.pass,
       fail: passed ? st.fail : st.fail + 1,
@@ -114,12 +115,24 @@ export default function StudyMode({ topic, onExit }: Props) {
       <header className="study-header">
         <button className="btn-ghost" onClick={onExit}>← Topics</button>
         <h2 className="study-topic">{topic}</h2>
-        <span className="study-score">
-          {streak.pass}/{total} &nbsp;
-          <span className={pct >= 70 ? 'score-good' : pct >= 40 ? 'score-mid' : 'score-bad'}>
-            {total > 0 ? `${pct}%` : '—'}
+        <div className="header-right">
+          <label className="track-toggle" title="Record pass/fail results to the database">
+            <input
+              type="checkbox"
+              checked={trackStats}
+              onChange={(e) => setTrackStats(e.target.checked)}
+            />
+            <span className={`track-label ${trackStats ? 'track-on' : 'track-off'}`}>
+              {trackStats ? 'Tracking' : 'Practice'}
+            </span>
+          </label>
+          <span className="study-score">
+            {streak.pass}/{total} &nbsp;
+            <span className={pct >= 70 ? 'score-good' : pct >= 40 ? 'score-mid' : 'score-bad'}>
+              {total > 0 ? `${pct}%` : '—'}
+            </span>
           </span>
-        </span>
+        </div>
       </header>
 
       <div className="study-body">

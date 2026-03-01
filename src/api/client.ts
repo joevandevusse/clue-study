@@ -1,4 +1,4 @@
-import { ClueDto } from '../types';
+import type { ClueDto } from '../types';
 
 const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:7070';
 

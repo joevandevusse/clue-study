@@ -1,4 +1,4 @@
-import { ClueDto } from '../types';
+import type { ClueDto } from '../types';
 import './FlashCard.css';
 
 interface Props {
