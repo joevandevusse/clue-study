@@ -9,9 +9,10 @@ export async function fetchTopics(): Promise<string[]> {
 }
 
 export async function fetchClues(topic: string, fromDate?: string | null): Promise<ClueDto[]> {
-  let url = `${BASE}/api/clues?topic=${encodeURIComponent(topic)}`;
-  if (fromDate) url += `&fromDate=${encodeURIComponent(fromDate)}`;
-  const res = await fetch(url);
+  const params = new URLSearchParams();
+  if (topic !== '__all__') params.set('topic', topic);
+  if (fromDate)            params.set('fromDate', fromDate);
+  const res = await fetch(`${BASE}/api/clues?${params}`);
   if (!res.ok) throw new Error(`Failed to fetch clues: ${res.status}`);
   return res.json();
 }

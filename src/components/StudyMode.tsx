@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchClues, recordStat } from '../api/client';
+import { ALL_TOPICS } from '../types';
 import type { ClueDto } from '../types';
 import FlashCard from './FlashCard';
 import Timer from './Timer';
@@ -74,7 +75,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
           clearInterval(timerRef.current!);
           if (!autoFired.current) {
             autoFired.current = true;
-            if (trackStats) recordStat(topic, false);
+            if (trackStats) recordStat(current.canonicalTopic, false);
             setStreak((st) => ({ ...st, fail: st.fail + 1 }));
             setRevealed(true);
           }
@@ -95,7 +96,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
   }
 
   function handleGrade(passed: boolean) {
-    if (trackStats) recordStat(topic, passed);
+    if (trackStats) recordStat(current!.canonicalTopic, passed);
     setStreak((st) => ({
       pass: passed ? st.pass + 1 : st.pass,
       fail: passed ? st.fail : st.fail + 1,
@@ -122,7 +123,9 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
             {paused ? '▶ Resume' : '⏸ Pause'}
           </button>
         )}
-        <h2 className="study-topic">{topic}</h2>
+        <h2 className="study-topic">
+          {topic === ALL_TOPICS ? 'All Topics' : topic}
+        </h2>
         <div className="header-right">
           <label className="track-toggle" title="Record pass/fail results to the database">
             <input

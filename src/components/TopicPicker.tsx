@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchTopics } from '../api/client';
-import { SEASON_OPTIONS, DEFAULT_SEASON } from '../types';
+import { SEASON_OPTIONS, DEFAULT_SEASON, ALL_TOPICS } from '../types';
 import type { SeasonOption, StudyConfig } from '../types';
 import './TopicPicker.css';
 
@@ -24,6 +24,8 @@ export default function TopicPicker({ onSelect }: Props) {
     if (topic) onSelect({ topic, fromDate: season.fromDate });
   }
 
+  const hasSelection = topic !== '';
+
   if (error) return <p className="error">{error}</p>;
 
   return (
@@ -37,6 +39,7 @@ export default function TopicPicker({ onSelect }: Props) {
         className="topic-select"
       >
         <option value="" disabled>-- Choose a topic --</option>
+        <option value={ALL_TOPICS}>🎲 All Topics</option>
         {topics.map((t) => (
           <option key={t} value={t}>{t}</option>
         ))}
@@ -61,7 +64,7 @@ export default function TopicPicker({ onSelect }: Props) {
       <button
         className="btn-primary"
         onClick={handleStart}
-        disabled={!topic}
+        disabled={!hasSelection}
       >
         Start Studying
       </button>

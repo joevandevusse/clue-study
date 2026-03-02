@@ -22,7 +22,9 @@ export const SEASON_OPTIONS: SeasonOption[] = [
 
 export const DEFAULT_SEASON = SEASON_OPTIONS[1]; // Season 30+ by default
 
+export const ALL_TOPICS = '__all__'; // sentinel meaning "no topic filter"
+
 export interface StudyConfig {
-  topic: string;
+  topic: string;        // a canonical topic name, or ALL_TOPICS
   fromDate: string | null;
 }
