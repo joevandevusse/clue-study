@@ -22,6 +22,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
   const [seconds, setSeconds]   = useState(TIMER_SECONDS);
   const [streak, setStreak]     = useState({ pass: 0, fail: 0 });
   const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState<string | null>(null);
   const [trackStats, setTrackStats] = useState(false);
   const [paused, setPaused]         = useState(false);
 
@@ -36,7 +37,12 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
   }, [topic, fromDate]);
 
   useEffect(() => {
-    loadClues().then(() => setLoading(false));
+    loadClues()
+      .then(() => setLoading(false))
+      .catch(() => {
+        setError('Could not load clues. Is ClueApi running?');
+        setLoading(false);
+      });
   }, [loadClues]);
 
   // ── Advance to next clue ──────────────────────────────────────────────
@@ -106,8 +112,30 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
 
   // ── Render ────────────────────────────────────────────────────────────
 
-  if (loading || current === null) {
+  if (loading) {
     return <p className="loading-msg">Loading clues…</p>;
+  }
+
+  if (error) {
+    return (
+      <div className="loading-msg" style={{ flexDirection: 'column', gap: '1rem' }}>
+        <p className="error">{error}</p>
+        <button className="btn-ghost" onClick={onExit}>← Back to Topics</button>
+      </div>
+    );
+  }
+
+  if (!loading && current === null) {
+    const label = topic === ALL_TOPICS ? 'All Topics' : topic;
+    return (
+      <div className="loading-msg" style={{ flexDirection: 'column', gap: '1rem' }}>
+        <p style={{ color: 'var(--text-dim)' }}>
+          No clues found for <strong style={{ color: 'var(--gold)' }}>{label}</strong>
+          {fromDate && ' in this era'}.
+        </p>
+        <button className="btn-ghost" onClick={onExit}>← Back to Topics</button>
+      </div>
+    );
   }
 
   const total = streak.pass + streak.fail;
