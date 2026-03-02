@@ -7,6 +7,12 @@ interface Props {
   onReveal: () => void;
 }
 
+function formatDate(dateStr: string): string {
+  // Append time to avoid off-by-one from UTC timezone conversion
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
 export default function FlashCard({ clue, revealed, onReveal }: Props) {
   return (
     <div className={`card-scene ${revealed ? 'is-flipped' : ''}`}>
@@ -27,6 +33,7 @@ export default function FlashCard({ clue, revealed, onReveal }: Props) {
           <p className="card-label">RESPONSE</p>
           <p className="card-answer">{clue.question}</p>
           <p className="card-question-echo">{clue.answer}</p>
+          <p className="card-airdate">Aired {formatDate(clue.gameDate)}</p>
         </div>
 
       </div>

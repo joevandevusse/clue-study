@@ -107,3 +107,10 @@
   margin: 0;
   font-style: italic;
 }
+
+.card-airdate {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin: 0;
+  letter-spacing: 0.04em;
+}

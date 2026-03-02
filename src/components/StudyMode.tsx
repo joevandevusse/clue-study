@@ -22,6 +22,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
   const [streak, setStreak]     = useState({ pass: 0, fail: 0 });
   const [loading, setLoading]   = useState(true);
   const [trackStats, setTrackStats] = useState(false);
+  const [paused, setPaused]         = useState(false);
 
   const timerRef  = useRef<ReturnType<typeof setInterval> | null>(null);
   const autoFired = useRef(false); // prevents double-recording on auto-fail
@@ -45,6 +46,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
     setQueue(rest);
     setRevealed(false);
     setSeconds(TIMER_SECONDS);
+    setPaused(false);
     autoFired.current = false;
 
     if (rest.length < REFETCH_THRESHOLD) {
@@ -64,7 +66,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
   // ── Countdown timer ───────────────────────────────────────────────────
 
   useEffect(() => {
-    if (revealed || current === null) return;
+    if (revealed || current === null || paused) return;
 
     timerRef.current = setInterval(() => {
       setSeconds((s) => {
@@ -83,7 +85,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
     }, 1000);
 
     return () => clearInterval(timerRef.current!);
-  }, [current, revealed, topic, trackStats]);
+  }, [current, revealed, topic, trackStats, paused]);
 
   // ── User interactions ─────────────────────────────────────────────────
 
@@ -115,6 +117,11 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
 
       <header className="study-header">
         <button className="btn-ghost" onClick={onExit}>← Topics</button>
+        {!revealed && (
+          <button className="btn-ghost btn-pause" onClick={() => setPaused((p) => !p)}>
+            {paused ? '▶ Resume' : '⏸ Pause'}
+          </button>
+        )}
         <h2 className="study-topic">{topic}</h2>
         <div className="header-right">
           <label className="track-toggle" title="Record pass/fail results to the database">
@@ -138,7 +145,9 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
 
       <div className="study-body">
         {!revealed && (
-          <Timer seconds={seconds} total={TIMER_SECONDS} />
+          paused
+            ? <span className="paused-indicator">PAUSED</span>
+            : <Timer seconds={seconds} total={TIMER_SECONDS} />
         )}
 
         <FlashCard
