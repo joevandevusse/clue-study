@@ -5,15 +5,16 @@ import FlashCard from './FlashCard';
 import Timer from './Timer';
 import './StudyMode.css';
 
-const TIMER_SECONDS = 3;
+const TIMER_SECONDS = 15;
 const REFETCH_THRESHOLD = 5; // fetch more clues when queue falls below this
 
 interface Props {
   topic: string;
+  fromDate: string | null;
   onExit: () => void;
 }
 
-export default function StudyMode({ topic, onExit }: Props) {
+export default function StudyMode({ topic, fromDate, onExit }: Props) {
   const [queue, setQueue]       = useState<ClueDto[]>([]);
   const [current, setCurrent]   = useState<ClueDto | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -28,9 +29,9 @@ export default function StudyMode({ topic, onExit }: Props) {
   // ── Load clues ────────────────────────────────────────────────────────
 
   const loadClues = useCallback(async () => {
-    const clues = await fetchClues(topic);
+    const clues = await fetchClues(topic, fromDate);
     setQueue((prev) => [...prev, ...clues]);
-  }, [topic]);
+  }, [topic, fromDate]);
 
   useEffect(() => {
     loadClues().then(() => setLoading(false));
@@ -47,11 +48,11 @@ export default function StudyMode({ topic, onExit }: Props) {
     autoFired.current = false;
 
     if (rest.length < REFETCH_THRESHOLD) {
-      fetchClues(topic).then((more) =>
+      fetchClues(topic, fromDate).then((more) =>
         setQueue((prev) => [...prev, ...more])
       );
     }
-  }, [topic]);
+  }, [topic, fromDate]);
 
   // Kick off first card once queue is populated
   useEffect(() => {

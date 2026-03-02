@@ -8,8 +8,10 @@ export async function fetchTopics(): Promise<string[]> {
   return res.json();
 }
 
-export async function fetchClues(topic: string): Promise<ClueDto[]> {
-  const res = await fetch(`${BASE}/api/clues?topic=${encodeURIComponent(topic)}`);
+export async function fetchClues(topic: string, fromDate?: string | null): Promise<ClueDto[]> {
+  let url = `${BASE}/api/clues?topic=${encodeURIComponent(topic)}`;
+  if (fromDate) url += `&fromDate=${encodeURIComponent(fromDate)}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch clues: ${res.status}`);
   return res.json();
 }
