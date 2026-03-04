@@ -22,7 +22,7 @@ export default function FlashCard({ clue, revealed, onReveal }: Props) {
         <div className="card-face card-front" onClick={!revealed ? onReveal : undefined}>
           <div className="card-meta">
             <span className="card-value">{clue.clueValue}</span>
-            <span className="card-topic">{clue.canonicalTopic}</span>
+            <span className="card-topic">{clue.category}</span>
           </div>
           <p className="card-question">{clue.answer}</p>
           <p className="card-hint">Click or wait for reveal</p>
@@ -33,6 +33,7 @@ export default function FlashCard({ clue, revealed, onReveal }: Props) {
           <p className="card-label">RESPONSE</p>
           <p className="card-answer">{clue.question}</p>
           <p className="card-question-echo">{clue.answer}</p>
+          <p className="card-canonical">Topic: {clue.canonicalTopic}</p>
           <p className="card-airdate">Aired {formatDate(clue.gameDate)}</p>
         </div>
 

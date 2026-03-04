@@ -6,8 +6,13 @@ import FlashCard from './FlashCard';
 import Timer from './Timer';
 import './StudyMode.css';
 
-const TIMER_SECONDS = 20;
-const REFETCH_THRESHOLD = 5; // fetch more clues when queue falls below this
+const TIMER_SECONDS       = 20;
+const FINAL_JEOPARDY_SECONDS = 30;
+const REFETCH_THRESHOLD   = 5; // fetch more clues when queue falls below this
+
+function timerFor(clue: ClueDto): number {
+  return clue.round === 'Final Jeopardy!' ? FINAL_JEOPARDY_SECONDS : TIMER_SECONDS;
+}
 
 interface Props {
   topic: string;
@@ -52,7 +57,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
     setCurrent(next ?? null);
     setQueue(rest);
     setRevealed(false);
-    setSeconds(TIMER_SECONDS);
+    setSeconds(next ? timerFor(next) : TIMER_SECONDS);
     setPaused(false);
     autoFired.current = false;
 
@@ -138,6 +143,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
     );
   }
 
+  const totalSeconds = timerFor(current);
   const total = streak.pass + streak.fail;
   const pct   = total === 0 ? 0 : Math.round((streak.pass / total) * 100);
 
@@ -178,7 +184,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
         {!revealed && (
           paused
             ? <span className="paused-indicator">PAUSED</span>
-            : <Timer seconds={seconds} total={TIMER_SECONDS} />
+            : <Timer seconds={seconds} total={totalSeconds} />
         )}
 
         <FlashCard

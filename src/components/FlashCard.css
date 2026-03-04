@@ -108,6 +108,14 @@
   font-style: italic;
 }
 
+.card-canonical {
+  font-size: 0.75rem;
+  color: var(--gold);
+  margin: 0;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .card-airdate {
   font-size: 0.75rem;
   color: var(--text-dim);

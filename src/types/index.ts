@@ -5,6 +5,7 @@ export interface ClueDto {
   round: string;
   gameDate: string;
   canonicalTopic: string;
+  category: string;
 }
 
 export interface SeasonOption {
