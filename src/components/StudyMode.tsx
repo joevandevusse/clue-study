@@ -28,8 +28,9 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
   const [streak, setStreak]     = useState({ pass: 0, fail: 0 });
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState<string | null>(null);
-  const [trackStats, setTrackStats] = useState(false);
-  const [paused, setPaused]         = useState(false);
+  const [trackStats, setTrackStats]         = useState(false);
+  const [paused, setPaused]                 = useState(false);
+  const [noFlipTransition, setNoFlipTransition] = useState(false);
 
   const timerRef  = useRef<ReturnType<typeof setInterval> | null>(null);
   const autoFired = useRef(false); // prevents double-recording on auto-fail
@@ -57,6 +58,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
     setCurrent(next ?? null);
     setQueue(rest);
     setRevealed(false);
+    setNoFlipTransition(true);
     setSeconds(next ? timerFor(next) : TIMER_SECONDS);
     setPaused(false);
     autoFired.current = false;
@@ -98,6 +100,13 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
 
     return () => clearInterval(timerRef.current!);
   }, [current, revealed, topic, trackStats, paused]);
+
+  // Clear the no-transition flag after one frame so future reveals still animate
+  useEffect(() => {
+    if (!noFlipTransition) return;
+    const id = requestAnimationFrame(() => setNoFlipTransition(false));
+    return () => cancelAnimationFrame(id);
+  }, [noFlipTransition]);
 
   // ── User interactions ─────────────────────────────────────────────────
 
@@ -191,6 +200,7 @@ export default function StudyMode({ topic, fromDate, onExit }: Props) {
           clue={current}
           revealed={revealed}
           onReveal={handleReveal}
+          noFlipTransition={noFlipTransition}
         />
 
         {revealed && (

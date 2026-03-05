@@ -5,6 +5,7 @@ interface Props {
   clue: ClueDto;
   revealed: boolean;
   onReveal: () => void;
+  noFlipTransition?: boolean;
 }
 
 function formatDate(dateStr: string): string {
@@ -13,10 +14,10 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-export default function FlashCard({ clue, revealed, onReveal }: Props) {
+export default function FlashCard({ clue, revealed, onReveal, noFlipTransition }: Props) {
   return (
     <div className={`card-scene ${revealed ? 'is-flipped' : ''}`}>
-      <div className="card-body">
+      <div className={`card-body${noFlipTransition ? ' no-transition' : ''}`}>
 
         {/* Front — the clue (Jeopardy calls this the "answer") */}
         <div className="card-face card-front" onClick={!revealed ? onReveal : undefined}>
