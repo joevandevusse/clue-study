@@ -29,3 +29,11 @@ export interface StudyConfig {
   topic: string;        // a canonical topic name, or ALL_TOPICS
   fromDate: string | null;
 }
+
+export interface BubblePoint {
+  canonicalTopic: string;
+  clueCount:      number;
+  meanValue:      number;
+  attemptCount:   number;
+  accuracy:       number | null;  // null = no data yet
+}

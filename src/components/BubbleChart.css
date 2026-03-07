@@ -1,0 +1,82 @@
+.bubble-chart {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--bg);
+}
+
+.bubble-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.bubble-chart-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.bubble-svg-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.bubble-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Axis text */
+.bubble-svg .axis text,
+.bubble-svg .axis-label {
+  fill: var(--text-dim);
+  font-size: 0.75rem;
+  font-family: inherit;
+}
+
+.bubble-svg .axis path,
+.bubble-svg .axis line {
+  stroke: var(--border);
+}
+
+.bubble-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--surface);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.82rem;
+  max-width: 220px;
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.tooltip-topic {
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.78rem;
+  word-break: break-word;
+}
+
+.tooltip-row {
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.tooltip-row strong {
+  color: var(--text);
+}

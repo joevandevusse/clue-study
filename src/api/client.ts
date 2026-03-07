@@ -1,4 +1,4 @@
-import type { ClueDto } from '../types';
+import type { BubblePoint, ClueDto } from '../types';
 
 const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:7070';
 
@@ -23,4 +23,10 @@ export async function recordStat(canonicalTopic: string, passed: boolean): Promi
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ canonicalTopic, passed }),
   });
+}
+
+export async function fetchBubbleData(): Promise<BubblePoint[]> {
+  const res = await fetch(`${BASE}/api/stats/bubble`);
+  if (!res.ok) throw new Error('Failed to fetch bubble data');
+  return res.json();
 }

@@ -5,10 +5,11 @@ import type { SeasonOption, StudyConfig } from '../types';
 import './TopicPicker.css';
 
 interface Props {
-  onSelect: (config: StudyConfig) => void;
+  onSelect:  (config: StudyConfig) => void;
+  onShowMap: () => void;
 }
 
-export default function TopicPicker({ onSelect }: Props) {
+export default function TopicPicker({ onSelect, onShowMap }: Props) {
   const [topics, setTopics]   = useState<string[]>([]);
   const [topic, setTopic]     = useState('');
   const [season, setSeason]   = useState<SeasonOption>(DEFAULT_SEASON);
@@ -67,6 +68,10 @@ export default function TopicPicker({ onSelect }: Props) {
         disabled={!hasSelection}
       >
         Start Studying
+      </button>
+
+      <button className="btn-ghost btn-map" onClick={onShowMap}>
+        Knowledge Map
       </button>
     </div>
   );

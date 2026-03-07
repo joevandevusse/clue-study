@@ -6,7 +6,7 @@ import FlashCard from './FlashCard';
 import Timer from './Timer';
 import './StudyMode.css';
 
-const TIMER_SECONDS       = 20;
+const TIMER_SECONDS       = 15;
 const FINAL_JEOPARDY_SECONDS = 30;
 const REFETCH_THRESHOLD   = 5; // fetch more clues when queue falls below this
 
