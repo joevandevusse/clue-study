@@ -16,6 +16,17 @@ interface TooltipState {
   point: BubblePoint | null;
 }
 
+const TOOLTIP_W = 232; // slightly over CSS max-width so we have margin
+const TOOLTIP_H = 130; // approximate rendered height
+
+function tooltipPos(event: MouseEvent, rect: DOMRect) {
+  const cursorX = event.clientX - rect.left;
+  const cursorY = event.clientY - rect.top;
+  const x = cursorX + TOOLTIP_W + 16 > rect.width  ? cursorX - TOOLTIP_W - 12 : cursorX + 12;
+  const y = cursorY + TOOLTIP_H + 8  > rect.height ? cursorY - TOOLTIP_H - 8  : cursorY - 8;
+  return { x, y };
+}
+
 function bubbleColor(accuracy: number | null): string {
   if (accuracy === null) return '#555';
   if (accuracy < 0.4)   return '#c0392b';
@@ -53,8 +64,9 @@ export default function BubbleChart({ onExit, onStudy }: Props) {
     const maxValue = d3.max(data, (d) => d.meanValue) ?? 1000;
     const maxCount = d3.max(data, (d) => d.clueCount) ?? 1;
 
+    const X_BREAK = 400;
     const xScale = d3.scaleLinear()
-      .domain([0, maxValue])
+      .domain([X_BREAK, maxValue * 1.05])
       .range([padding.left, width - padding.right]);
 
     const yScale = d3.scaleLinear()
@@ -78,6 +90,26 @@ export default function BubbleChart({ onExit, onStudy }: Props) {
       .attr('class', 'axis')
       .attr('transform', `translate(0,${height - padding.bottom})`)
       .call(xAxis);
+
+    // Broken-axis marker at the left edge of the x-axis
+    {
+      const bx = padding.left;
+      const by = height - padding.bottom;
+      const bh = 10; const bw = 6;
+      const brk = svg.append('g').attr('transform', `translate(${bx},${by})`);
+      // Erase the axis line behind the marker
+      brk.append('rect')
+        .attr('x', -bw - 1).attr('y', -bh / 2)
+        .attr('width', bw * 2 + 2).attr('height', bh)
+        .attr('fill', 'var(--bg)');
+      // Two diagonal slashes
+      [-bw / 2, bw / 2].forEach((dx) => {
+        brk.append('line')
+          .attr('x1', dx - 3).attr('y1',  bh / 2)
+          .attr('x2', dx + 3).attr('y2', -bh / 2)
+          .attr('stroke', 'var(--text-dim)').attr('stroke-width', 1.5);
+      });
+    }
 
     svg.append('g')
       .attr('class', 'axis')
@@ -105,7 +137,7 @@ export default function BubbleChart({ onExit, onStudy }: Props) {
     const nodes: SimNode[] = data.map((d) => ({ ...d }));
 
     const sim = d3.forceSimulation(nodes)
-      .force('x', d3.forceX<SimNode>((d) => xScale(d.meanValue)).strength(0.5))
+      .force('x', d3.forceX<SimNode>((d) => xScale(d.meanValue)).strength(0.3))
       .force('y', d3.forceY<SimNode>((d) => yScale(d.accuracy ?? 0.5)).strength(0.5))
       .force('collide', d3.forceCollide<SimNode>((d) => rScale(d.clueCount) + 3))
       .stop();
@@ -132,18 +164,13 @@ export default function BubbleChart({ onExit, onStudy }: Props) {
         const rect = wrapRef.current!.getBoundingClientRect();
         setTooltip({
           visible: true,
-          x: event.clientX - rect.left + 12,
-          y: event.clientY - rect.top  - 8,
+          ...tooltipPos(event, rect),
           point: d,
         });
       })
       .on('mousemove', (event: MouseEvent) => {
         const rect = wrapRef.current!.getBoundingClientRect();
-        setTooltip((prev) => ({
-          ...prev,
-          x: event.clientX - rect.left + 12,
-          y: event.clientY - rect.top  - 8,
-        }));
+        setTooltip((prev) => ({ ...prev, ...tooltipPos(event, rect) }));
       })
       .on('mouseout', () => {
         setTooltip((prev) => ({ ...prev, visible: false }));
